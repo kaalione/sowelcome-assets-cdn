@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SoWelcome Assets Gallery</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        h1 { color: white; margin-bottom: 20px; }
+        .search { 
+            padding: 10px; 
+            width: 300px;
+            margin: 20px 0; 
+            border-radius: 5px;
+            border: none;
+        }
+        .category { 
+            background: white; 
+            margin: 20px 0; 
+            padding: 20px; 
+            border-radius: 10px; 
+        }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 15px; 
+        }
+        .asset { 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .asset:hover { 
+            background: #f0f0f0;
+        }
+        .asset img { 
+            width: 100%; 
+            height: 100px; 
+            object-fit: contain; 
+        }
+        .copied { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            background: green;
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>SoWelcome Assets Gallery</h1>
+    <p style="color: white;">Click any image to copy its CDN link</p>
+    <input type="text" class="search" placeholder="Search..." id="searchBox">
+    
+    <div class="category">
+        <h2>Logos</h2>
+        <div class="grid" id="logos"></div>
+    </div>
+    
+    <div class="category">
+        <h2>Text Icons</h2>
+        <div class="grid" id="text-icons"></div>
+    </div>
+    
+    <div class="category">
+        <h2>Event Icons</h2>
+        <div class="grid" id="event-icons"></div>
+    </div>
+    
+    <div class="category">
+        <h2>Steps</h2>
+        <div class="grid" id="steps"></div>
+    </div>
+    
+    <div class="copied" id="copied">Link copied!</div>
+    
+    <script>
+        const baseURL = 'https://cdn.jsdelivr.net/gh/kaalione/sowelcome-assets-cdn@main/';
+        
+        const assets = {
+            'logos': [
+                'logos-original/web_logos/sowelcome-logo-org.png',
+                'logos-original/web_logos/sowelcome-lemur-icon.png',
+                'logos-original/web_logos/sowelcome-header.jpg'
+            ],
+            'text-icons': [
+                'text-icons/Birthday-text.png',
+                'text-icons/Celebrations-text.png',
+                'text-icons/BusinessEvent-text.png',
+                'text-icons/Graduation-text.png'
+            ],
+            'event-icons': [
+                'event-icons/icon_web/Birthday.png',
+                'event-icons/icon_web/business.png',
+                'event-icons/icon_web/concert.png'
+            ],
+            'steps': [
+                'steps/sowelcome_step_1.png',
+                'steps/sowelcome_step_2.png',
+                'steps/sowelcome_step_3.png'
+            ]
+        };
+        
+        function createAssetCard(path) {
+            const url = baseURL + path;
+            const name = path.split('/').pop();
+            return '<div class="asset" onclick="copyLink(\'' + url + '\')">' +
+                   '<img src="' + url + '" alt="' + name + '">' +
+                   '<small>' + name + '</small></div>';
+        }
+        
+        function copyLink(url) {
+            navigator.clipboard.writeText(url);
+            document.getElementById('copied').style.display = 'block';
+            setTimeout(() => document.getElementById('copied').style.display = 'none', 2000);
+        }
+        
+        Object.entries(assets).forEach(([category, files]) => {
+            const container = document.getElementById(category);
+            container.innerHTML = files.map(createAssetCard).join('');
+        });
+        
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            document.querySelectorAll('.asset').forEach(asset => {
+                const name = asset.querySelector('small').textContent.toLowerCase();
+                asset.style.display = name.includes(search) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
