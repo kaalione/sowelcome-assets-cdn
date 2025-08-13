@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SoWelcome CDN Directory</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .back-link {
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .folder-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .folder-title {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .link-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        .link-item {
+            padding: 5px;
+            margin: 2px 0;
+            cursor: pointer;
+            transition: background 0.2s;
+            word-break: break-all;
+        }
+        .link-item:hover {
+            background: #e8ebff;
+            border-radius: 3px;
+        }
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        .copy-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        .stats {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+        .copied {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://kaalione.github.io/sowelcome-assets-cdn/" class="back-link">← Back to Gallery</a>
+        <h1>📚 SoWelcome CDN Complete Directory</h1>
+        <div class="stats" id="stats">Loading...</div>
+        
+        <div id="folders"></div>
+        
+        <div class="copied" id="copied">✓ Copied to clipboard!</div>
+    </div>
+    
+    <script>
+        const baseURL = 'https://cdn.jsdelivr.net/gh/kaalione/sowelcome-assets-cdn@main/';
+        
+        const folders = {
+            '📌 Logos': {
+                path: 'logos-original/web_logos/',
+                files: ['sowelcome-logo-org.png', 'sowelcome-lemur-icon.png', 'sowelcome-lemur-icon.svg', 'sowelcome-header.jpg', 'sowelcome-120x120.png']
+            },
+            '📝 Text Icons': {
+                path: 'text-icons/',
+                files: ['Birthday-text.png', 'Birthday2-text.png', 'Celebrations-text.png', 'BusinessEvent-text.png', 'BusinessEvent2-text.png', 'Graduation-text.png', 'Banquettes-text.png', 'Banquettes2-text.png', 'Concerts-text.png', 'DinnersLarge-text.png', 'DinnersLarge2-text.png', 'Spontaneous-text.png', 'Spontaneous2-text.png', 'Topical-text.png', 'reunion-text.png']
+            },
+            '🎯 Event Icons': {
+                path: 'event-icons/icon_web/',
+                files: ['Birthday.png', 'banquette.png', 'business.png', 'business_event.png', 'celebrations.png', 'concert.png', 'concerts.png', 'graduation.png', 'largegroupdinner.png', 'reunion.png', 'spontanous.png']
+            },
+            '👣 Process Steps': {
+                path: 'steps/',
+                files: ['sowelcome_step_1.png', 'sowelcome_step_2.png', 'sowelcome_step_3.png', 'sowelcome_step_4.png', 'sowelcome_step_5.png', 'sowelcome_step_6.png', 'sowelcome_step_7.png', 'sowelcome_step_8.png', 'sowelcome_step_9.png', 'sowelcome_step_10.png', 'sowelcome_step_11.png', 'sowelcome_step_12.png', 'sowelcome_step_13.png']
+            },
+            '🖼️ Backgrounds': {
+                path: 'bkgs/bkgs_abs/',
+                files: ['sowelcome_hero_1.jpeg', 'sowelcome_hero_2.png', 'sowelcome_hero_3.png', 'sowelcome_hero_4.png', 'sowelcome_hero_5.png']
+            },
+            '🍽️ Dinner Images': {
+                path: 'dinners/',
+                files: ['dinner.jpeg', 'party.jpeg', 'step-1-smiling.png']
+            }
+        };
+        
+        let totalFiles = 0;
+        const container = document.getElementById('folders');
+        
+        Object.entries(folders).forEach(([name, data]) => {
+            totalFiles += data.files.length;
+            
+            const section = document.createElement('div');
+            section.className = 'folder-section';
+            
+            const links = data.files.map(file => baseURL + data.path + file);
+            
+            section.innerHTML = `
+                <h2 class="folder-title">${name} (${data.files.length} files)</h2>
+                <div class="link-list">
+                    ${links.map((link, i) => `<div class="link-item" onclick="copyLink('${link}')">${data.files[i]} → Click to copy link</div>`).join('')}
+                </div>
+                <button class="copy-btn" onclick="copyAllLinks('${name}', ${JSON.stringify(links).replace(/"/g, '&quot;')})">
+                    📋 Copy All ${name} Links
+                </button>
+            `;
+            
+            container.appendChild(section);
+        });
+        
+        document.getElementById('stats').textContent = `📊 Total: ${totalFiles} CDN links available`;
+        
+        function copyLink(url) {
+            navigator.clipboard.writeText(url);
+            showCopied('Link copied!');
+        }
+        
+        function copyAllLinks(folderName, links) {
+            const text = links.join('\n');
+            navigator.clipboard.writeText(text);
+            showCopied(`All ${folderName} links copied!`);
+        }
+        
+        function showCopied(message) {
+            const copied = document.getElementById('copied');
+            copied.textContent = '✓ ' + message;
+            copied.style.display = 'block';
+            setTimeout(() => copied.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>
