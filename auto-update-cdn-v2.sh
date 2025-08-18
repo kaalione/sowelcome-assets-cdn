@@ -1,3 +1,38 @@
+#!/bin/bash
+
+echo "🚀 SoWelcome CDN Auto-Update Starting..."
+echo "======================================="
+
+# Navigate to repo
+cd /Users/linuskaasik/Downloads/SoWelcome_Assets
+
+# Step 1: Check for new files
+echo "📊 Checking for new images..."
+NEW_FILES=$(git status --porcelain | grep -E '\.(png|jpg|jpeg|gif|svg|PNG|JPG|JPEG|GIF|SVG)$' | wc -l | tr -d ' ')
+
+if [ "$NEW_FILES" -gt 0 ]; then
+    echo "✅ Found $NEW_FILES new image(s)"
+    git add "**/*.png" "**/*.jpg" "**/*.jpeg" "**/*.gif" "**/*.svg" "**/*.PNG" "**/*.JPG" "**/*.JPEG" "**/*.GIF" "**/*.SVG"
+    git commit -m "Add $NEW_FILES new images"
+    git push
+    echo "📤 New images uploaded to GitHub"
+else
+    echo "ℹ️  No new images to upload"
+fi
+
+# Step 2: Regenerate the complete gallery
+echo ""
+echo "🔄 Updating gallery with all images..."
+
+# Get all image files from git
+git ls-files | grep -E '\.(png|jpg|jpeg|gif|svg|PNG|JPG|JPEG|GIF|SVG)$' > all-images.txt
+
+# Count them
+TOTAL=$(wc -l < all-images.txt)
+echo "📊 Total images in CDN: $TOTAL"
+
+# Create updated gallery with folder filtering
+cat > index-complete.html << 'HTML'
 <!DOCTYPE html>
 <html>
 <head>
@@ -151,158 +186,14 @@
     <script>
         const baseURL = 'https://cdn.jsdelivr.net/gh/kaalione/sowelcome-assets-cdn@main/';
         const allImages = [
-            'bkgs/bkg_people/sowelcome_hero_ppl_1.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_10.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_2.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_3.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_4.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_5.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_6.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_7.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_8.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_9.png',
-            'bkgs/bkgs_abs/sowelcome_hero_1.jpeg',
-            'bkgs/bkgs_abs/sowelcome_hero_10.png',
-            'bkgs/bkgs_abs/sowelcome_hero_11.png',
-            'bkgs/bkgs_abs/sowelcome_hero_2.png',
-            'bkgs/bkgs_abs/sowelcome_hero_3.png',
-            'bkgs/bkgs_abs/sowelcome_hero_4.png',
-            'bkgs/bkgs_abs/sowelcome_hero_5.png',
-            'bkgs/bkgs_abs/sowelcome_hero_6.png',
-            'bkgs/bkgs_abs/sowelcome_hero_7.png',
-            'bkgs/bkgs_abs/sowelcome_hero_8.png',
-            'bkgs/bkgs_abs/sowelcome_hero_9.png',
-            'cluster-eventbkg/abstract_background_pink.png',
-            'cluster-eventbkg/ai _inovation.png',
-            'cluster-eventbkg/ai2.png',
-            'cluster-eventbkg/blue_lamp_background.png',
-            'cluster-eventbkg/calming_background_geen.png',
-            'cluster-eventbkg/campfire-fri-tanke-sowelcome.png',
-            'cluster-eventbkg/campfire-session-sowelcome-fritanke.png',
-            'cluster-eventbkg/inspiring_after-work.png',
-            'cluster-eventbkg/intraprenour-breakfast-sowelcome.png',
-            'cluster-eventbkg/longeviryinvite.png',
-            'cluster-eventbkg/minimalistic_background.png',
-            'cluster-eventbkg/modern_conference.png',
-            'cluster-eventbkg/peaceful_breakfast_gathering.png',
-            'dinners/dinner.jpeg',
-            'dinners/party.jpeg',
-            'dinners/step-1-smiling.png',
-            'event-icons/Animated-Icons-NoBkg/abstract-celebration-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/balloon-party-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/banquette-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/birthday-cake-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/celebration-lotus-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/concert-party-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/fireworks-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/gift-surprise-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/graduation-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/reunion-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/spontaneous-animated.gif',
-            'event-icons/SW-ICONS-NO-BKG/1.png',
-            'event-icons/SW-ICONS-NO-BKG/10.png',
-            'event-icons/SW-ICONS-NO-BKG/11.png',
-            'event-icons/SW-ICONS-NO-BKG/12.png',
-            'event-icons/SW-ICONS-NO-BKG/13.png',
-            'event-icons/SW-ICONS-NO-BKG/14.png',
-            'event-icons/SW-ICONS-NO-BKG/15.png',
-            'event-icons/SW-ICONS-NO-BKG/2.png',
-            'event-icons/SW-ICONS-NO-BKG/3.png',
-            'event-icons/SW-ICONS-NO-BKG/4.png',
-            'event-icons/SW-ICONS-NO-BKG/5.png',
-            'event-icons/SW-ICONS-NO-BKG/6.png',
-            'event-icons/SW-ICONS-NO-BKG/7.png',
-            'event-icons/SW-ICONS-NO-BKG/8.png',
-            'event-icons/SW-ICONS-NO-BKG/9.png',
-            'event-icons/icon_web/0_1 (1).png',
-            'event-icons/icon_web/0_1 (3).png',
-            'event-icons/icon_web/0_1 (5).png',
-            'event-icons/icon_web/0_1 (6).png',
-            'event-icons/icon_web/0_3 (5).png',
-            'event-icons/icon_web/Birthday.png',
-            'event-icons/icon_web/banquette.png',
-            'event-icons/icon_web/business.png',
-            'event-icons/icon_web/business_event.png',
-            'event-icons/icon_web/celebrations.png',
-            'event-icons/icon_web/concert.png',
-            'event-icons/icon_web/concerts.png',
-            'event-icons/icon_web/graduation.png',
-            'event-icons/icon_web/large group dinner.png',
-            'event-icons/icon_web/largegroupdinner.png',
-            'event-icons/icon_web/reunion.png',
-            'event-icons/icon_web/spontanous.png',
-            'event-icons/new-coons/Birthday-Cake-Icon.png',
-            'event-icons/new-coons/Business-Event-Icon.png',
-            'event-icons/new-coons/Celebration-Fireworks-Icon.png',
-            'event-icons/new-coons/Concert-Performance-Icon.png',
-            'event-icons/new-coons/DInner-Party-Icon-.png',
-            'event-icons/new-coons/Dinner-Party-Icon.png',
-            'event-icons/new-coons/Gift-Surprise-Icon.png',
-            'event-icons/new-coons/Graduation-Icon.png',
-            'event-icons/new-coons/Networking-Community-Icon.png',
-            'event-icons/new-coons/Professional-&-Career.png',
-            'event-icons/new-coons/Reunion-Team-Icon.png',
-            'event-icons/new-coons/Seasonal-&-Holiday.png',
-            'event-icons/new-coons/Wellness-&-Personal-Growth.png',
-            'event-icons/new-coons/oncert-Performance-Icon.png',
-            'event-icons/new-coons/social-lifestyle.png',
-            'event-icons/others/birthday.png',
-            'event-icons/others/birthday_cake.png',
-            'event-icons/others/concerts copy.png',
-            'event-icons/others/concerts.png',
-            'event-icons/others/deadline-icon-trans.png',
-            'event-icons/others/friends_icon.jpg',
-            'event-icons/others/friends_icon_sowelcome.png',
-            'event-icons/others/g56.png',
-            'event-icons/others/graduation.png',
-            'event-icons/others/info-icon.png',
-            'event-icons/others/large_group.png',
-            'event-icons/others/logo-icon.png',
-            'event-icons/others/people-icon-png-group-png-favpng-uVtkfNdweV9MQJ48XVWY2334X.jpg',
-            'event-icons/others/price-icon.png',
-            'event-icons/others/simeconference_Create_a_birthday_party_icon_for_online_use_feat_9281085e-9f1f-44fc-b5d0-ddc671b13b46.png',
-            'event-icons/others/sowelomce_business_event.png',
-            'logos-original/web_logos/sowelcome-120x120.png',
-            'logos-original/web_logos/sowelcome-header.jpg',
-            'logos-original/web_logos/sowelcome-lemur-icon.png',
-            'logos-original/web_logos/sowelcome-lemur-icon.svg',
-            'logos-original/web_logos/sowelcome-lemur-no-bkg (kopia).png',
-            'logos-original/web_logos/sowelcome-lemur-no-bkg.svg',
-            'logos-original/web_logos/sowelcome-logo-org.png',
-            'logos-original/web_logos/sowelcome-logo-org.svg',
-            'logos-original/web_logos/sowelcome_lemur_vector_g302.svg',
-            'niki-sw-img/dinner_party.jpeg',
-            'niki-sw-img/pool.jpeg',
-            'niki-sw-img/sowelcome-header-1920x1200.jpg',
-            'steps/sowelcome_step_1.png',
-            'steps/sowelcome_step_10.png',
-            'steps/sowelcome_step_11.png',
-            'steps/sowelcome_step_12.png',
-            'steps/sowelcome_step_13.png',
-            'steps/sowelcome_step_2.png',
-            'steps/sowelcome_step_3.png',
-            'steps/sowelcome_step_4.png',
-            'steps/sowelcome_step_5.png',
-            'steps/sowelcome_step_6.png',
-            'steps/sowelcome_step_7.png',
-            'steps/sowelcome_step_8.png',
-            'steps/sowelcome_step_9.png',
-            'text-icons/Banquettes-text.png',
-            'text-icons/Banquettes2-text.png',
-            'text-icons/Birthday-text.png',
-            'text-icons/Birthday2-text.png',
-            'text-icons/BusinessEvent-text.png',
-            'text-icons/BusinessEvent2-text.png',
-            'text-icons/Celebrations-text.png',
-            'text-icons/Concerts-text.png',
-            'text-icons/DinnersLarge-text.png',
-            'text-icons/DinnersLarge2-text.png',
-            'text-icons/Graduation-text.png',
-            'text-icons/Spontaneous-text.png',
-            'text-icons/Spontaneous2-text.png',
-            'text-icons/Topical-text.png',
-            'text-icons/reunion-text.png',
-            'venue-menus-pdfs/brunch.jpeg',
+HTML
+
+# Add each image file as a JavaScript array element
+while IFS= read -r file; do
+    echo "            '$file'," >> index-complete.html
+done < all-images.txt
+
+cat >> index-complete.html << 'HTML'
         ];
         
         // Group images by folder
@@ -446,3 +337,24 @@
     </script>
 </body>
 </html>
+HTML
+
+# Clean up
+rm all-images.txt
+
+# Step 3: Commit and push the updated gallery
+git add index-complete.html auto-update-cdn-v2.sh
+git commit -m "Add folder sharing feature - gallery with $TOTAL images"
+git push
+
+echo ""
+echo "✅ SUCCESS! Gallery updated with folder sharing!"
+echo "================================"
+echo "📊 Total images: $TOTAL"
+echo "🌐 Gallery URL: https://kaalione.github.io/sowelcome-assets-cdn/index-complete.html"
+echo ""
+echo "📁 FOLDER SHARING:"
+echo "  - Click '🔗 Share Folder Link' button on any folder"
+echo "  - Example: https://kaalione.github.io/sowelcome-assets-cdn/index-complete.html?folder=bkgs"
+echo ""
+echo "⏰ Gallery will be live in 2-3 minutes"
