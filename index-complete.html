@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SoWelcome Assets Gallery - Complete Collection</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { color: white; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .subtitle { color: rgba(255,255,255,0.9); margin-bottom: 20px; }
+        .stats {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 20px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .last-updated {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9em;
+            margin-left: 20px;
+        }
+        .search { 
+            padding: 12px 20px; 
+            width: 100%;
+            max-width: 500px;
+            margin: 20px 0; 
+            border-radius: 25px;
+            border: none;
+            font-size: 16px;
+        }
+        .folder-section {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .folder-title {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+            gap: 20px; 
+        }
+        .asset { 
+            border: 2px solid #f0f0f0; 
+            border-radius: 8px; 
+            padding: 12px;
+            cursor: pointer;
+            text-align: center;
+            background: white;
+            transition: all 0.3s;
+        }
+        .asset:hover { 
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        .asset img { 
+            width: 100%; 
+            height: 120px; 
+            object-fit: contain; 
+        }
+        .asset-name {
+            font-size: 0.85em;
+            margin-top: 8px;
+            color: #555;
+            word-break: break-all;
+            font-weight: 500;
+        }
+        .copied { 
+            position: fixed; 
+            bottom: 30px; 
+            right: 30px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            padding: 15px 25px; 
+            border-radius: 25px; 
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 SoWelcome Complete Assets Gallery</h1>
+        <p class="subtitle">Click any image to copy its CDN link</p>
+        <div class="stats" id="stats">Loading...</div>
+        <span class="last-updated">Last updated: 2025-08-18 09:57</span>
+        <br>
+        <input type="text" class="search" placeholder="Search images by name..." id="searchBox">
+        <div id="folders"></div>
+    </div>
+    
+    <div class="copied" id="copied">✓ Link copied!</div>
+    
+    <script>
+        const baseURL = 'https://cdn.jsdelivr.net/gh/kaalione/sowelcome-assets-cdn@main/';
+        const allImages = [
+            'bkgs/bkg_people/sowelcome_hero_ppl_1.png',
+            'bkgs/bkg_people/sowelcome_hero_ppl_10.png',
+            'bkgs/bkg_people/sowelcome_hero_ppl_2.png',
+            'bkgs/bkg_people/sowelcome_hero_ppl_3.png',
+            'bkgs/bkg_people/sowelcome_hero_ppl_4.png',
+            'bkgs/bkg_people/sowelcome_hero_ppl_5.png',
+            'bkgs/bkg_people/sowelcome_hero_ppl_6.png',
+            'bkgs/bkg_people/sowelcome_hero_ppl_7.png',
+            'bkgs/bkg_people/sowelcome_hero_ppl_8.png',
+            'bkgs/bkg_people/sowelcome_hero_ppl_9.png',
+            'bkgs/bkgs_abs/sowelcome_hero_1.jpeg',
+            'bkgs/bkgs_abs/sowelcome_hero_10.png',
+            'bkgs/bkgs_abs/sowelcome_hero_11.png',
+            'bkgs/bkgs_abs/sowelcome_hero_2.png',
+            'bkgs/bkgs_abs/sowelcome_hero_3.png',
+            'bkgs/bkgs_abs/sowelcome_hero_4.png',
+            'bkgs/bkgs_abs/sowelcome_hero_5.png',
+            'bkgs/bkgs_abs/sowelcome_hero_6.png',
+            'bkgs/bkgs_abs/sowelcome_hero_7.png',
+            'bkgs/bkgs_abs/sowelcome_hero_8.png',
+            'bkgs/bkgs_abs/sowelcome_hero_9.png',
+            'cluster-eventbkg/abstract_background_pink.png',
+            'cluster-eventbkg/ai _inovation.png',
+            'cluster-eventbkg/ai2.png',
+            'cluster-eventbkg/blue_lamp_background.png',
+            'cluster-eventbkg/calming_background_geen.png',
+            'cluster-eventbkg/campfire-fri-tanke-sowelcome.png',
+            'cluster-eventbkg/campfire-session-sowelcome-fritanke.png',
+            'cluster-eventbkg/inspiring_after-work.png',
+            'cluster-eventbkg/intraprenour-breakfast-sowelcome.png',
+            'cluster-eventbkg/longeviryinvite.png',
+            'cluster-eventbkg/minimalistic_background.png',
+            'cluster-eventbkg/modern_conference.png',
+            'cluster-eventbkg/peaceful_breakfast_gathering.png',
+            'dinners/dinner.jpeg',
+            'dinners/party.jpeg',
+            'dinners/step-1-smiling.png',
+            'event-icons/Animated-Icons-NoBkg/abstract-celebration-animated.gif',
+            'event-icons/Animated-Icons-NoBkg/balloon-party-animated.gif',
+            'event-icons/Animated-Icons-NoBkg/banquette-animated.gif',
+            'event-icons/Animated-Icons-NoBkg/birthday-cake-animated.gif',
+            'event-icons/Animated-Icons-NoBkg/celebration-lotus-animated.gif',
+            'event-icons/Animated-Icons-NoBkg/concert-party-animated.gif',
+            'event-icons/Animated-Icons-NoBkg/fireworks-animated.gif',
+            'event-icons/Animated-Icons-NoBkg/gift-surprise-animated.gif',
+            'event-icons/Animated-Icons-NoBkg/graduation-animated.gif',
+            'event-icons/Animated-Icons-NoBkg/reunion-animated.gif',
+            'event-icons/Animated-Icons-NoBkg/spontaneous-animated.gif',
+            'event-icons/SW-ICONS-NO-BKG/1.png',
+            'event-icons/SW-ICONS-NO-BKG/10.png',
+            'event-icons/SW-ICONS-NO-BKG/11.png',
+            'event-icons/SW-ICONS-NO-BKG/12.png',
+            'event-icons/SW-ICONS-NO-BKG/13.png',
+            'event-icons/SW-ICONS-NO-BKG/14.png',
+            'event-icons/SW-ICONS-NO-BKG/15.png',
+            'event-icons/SW-ICONS-NO-BKG/2.png',
+            'event-icons/SW-ICONS-NO-BKG/3.png',
+            'event-icons/SW-ICONS-NO-BKG/4.png',
+            'event-icons/SW-ICONS-NO-BKG/5.png',
+            'event-icons/SW-ICONS-NO-BKG/6.png',
+            'event-icons/SW-ICONS-NO-BKG/7.png',
+            'event-icons/SW-ICONS-NO-BKG/8.png',
+            'event-icons/SW-ICONS-NO-BKG/9.png',
+            'event-icons/icon_web/0_1 (1).png',
+            'event-icons/icon_web/0_1 (3).png',
+            'event-icons/icon_web/0_1 (5).png',
+            'event-icons/icon_web/0_1 (6).png',
+            'event-icons/icon_web/0_3 (5).png',
+            'event-icons/icon_web/Birthday.png',
+            'event-icons/icon_web/banquette.png',
+            'event-icons/icon_web/business.png',
+            'event-icons/icon_web/business_event.png',
+            'event-icons/icon_web/celebrations.png',
+            'event-icons/icon_web/concert.png',
+            'event-icons/icon_web/concerts.png',
+            'event-icons/icon_web/graduation.png',
+            'event-icons/icon_web/large group dinner.png',
+            'event-icons/icon_web/largegroupdinner.png',
+            'event-icons/icon_web/reunion.png',
+            'event-icons/icon_web/spontanous.png',
+            'event-icons/new-coons/Birthday-Cake-Icon.png',
+            'event-icons/new-coons/Business-Event-Icon.png',
+            'event-icons/new-coons/Celebration-Fireworks-Icon.png',
+            'event-icons/new-coons/Concert-Performance-Icon.png',
+            'event-icons/new-coons/DInner-Party-Icon-.png',
+            'event-icons/new-coons/Dinner-Party-Icon.png',
+            'event-icons/new-coons/Gift-Surprise-Icon.png',
+            'event-icons/new-coons/Graduation-Icon.png',
+            'event-icons/new-coons/Networking-Community-Icon.png',
+            'event-icons/new-coons/Professional-&-Career.png',
+            'event-icons/new-coons/Reunion-Team-Icon.png',
+            'event-icons/new-coons/Seasonal-&-Holiday.png',
+            'event-icons/new-coons/Wellness-&-Personal-Growth.png',
+            'event-icons/new-coons/oncert-Performance-Icon.png',
+            'event-icons/new-coons/social-lifestyle.png',
+            'event-icons/others/birthday.png',
+            'event-icons/others/birthday_cake.png',
+            'event-icons/others/concerts copy.png',
+            'event-icons/others/concerts.png',
+            'event-icons/others/deadline-icon-trans.png',
+            'event-icons/others/friends_icon.jpg',
+            'event-icons/others/friends_icon_sowelcome.png',
+            'event-icons/others/g56.png',
+            'event-icons/others/graduation.png',
+            'event-icons/others/info-icon.png',
+            'event-icons/others/large_group.png',
+            'event-icons/others/logo-icon.png',
+            'event-icons/others/people-icon-png-group-png-favpng-uVtkfNdweV9MQJ48XVWY2334X.jpg',
+            'event-icons/others/price-icon.png',
+            'event-icons/others/simeconference_Create_a_birthday_party_icon_for_online_use_feat_9281085e-9f1f-44fc-b5d0-ddc671b13b46.png',
+            'event-icons/others/sowelomce_business_event.png',
+            'logos-original/web_logos/sowelcome-120x120.png',
+            'logos-original/web_logos/sowelcome-header.jpg',
+            'logos-original/web_logos/sowelcome-lemur-icon.png',
+            'logos-original/web_logos/sowelcome-lemur-icon.svg',
+            'logos-original/web_logos/sowelcome-lemur-no-bkg (kopia).png',
+            'logos-original/web_logos/sowelcome-lemur-no-bkg.svg',
+            'logos-original/web_logos/sowelcome-logo-org.png',
+            'logos-original/web_logos/sowelcome-logo-org.svg',
+            'logos-original/web_logos/sowelcome_lemur_vector_g302.svg',
+            'niki-sw-img/dinner_party.jpeg',
+            'niki-sw-img/pool.jpeg',
+            'niki-sw-img/sowelcome-header-1920x1200.jpg',
+            'steps/sowelcome_step_1.png',
+            'steps/sowelcome_step_10.png',
+            'steps/sowelcome_step_11.png',
+            'steps/sowelcome_step_12.png',
+            'steps/sowelcome_step_13.png',
+            'steps/sowelcome_step_2.png',
+            'steps/sowelcome_step_3.png',
+            'steps/sowelcome_step_4.png',
+            'steps/sowelcome_step_5.png',
+            'steps/sowelcome_step_6.png',
+            'steps/sowelcome_step_7.png',
+            'steps/sowelcome_step_8.png',
+            'steps/sowelcome_step_9.png',
+            'text-icons/Banquettes-text.png',
+            'text-icons/Banquettes2-text.png',
+            'text-icons/Birthday-text.png',
+            'text-icons/Birthday2-text.png',
+            'text-icons/BusinessEvent-text.png',
+            'text-icons/BusinessEvent2-text.png',
+            'text-icons/Celebrations-text.png',
+            'text-icons/Concerts-text.png',
+            'text-icons/DinnersLarge-text.png',
+            'text-icons/DinnersLarge2-text.png',
+            'text-icons/Graduation-text.png',
+            'text-icons/Spontaneous-text.png',
+            'text-icons/Spontaneous2-text.png',
+            'text-icons/Topical-text.png',
+            'text-icons/reunion-text.png',
+            'venue-menus-pdfs/brunch.jpeg',
+        ];
+        
+        // Group images by folder
+        const folders = {};
+        allImages.forEach(path => {
+            if (!path) return;
+            const parts = path.split('/');
+            let folderName = parts[0];
+            if (parts.length > 2 && parts[0] === 'event-icons') {
+                folderName = parts[0] + '/' + parts[1];
+            }
+            if (!folders[folderName]) folders[folderName] = [];
+            folders[folderName].push(path);
+        });
+        
+        // Sort folders alphabetically
+        const sortedFolders = Object.keys(folders).sort();
+        
+        // Create HTML for each folder
+        const container = document.getElementById('folders');
+        let totalImages = 0;
+        
+        sortedFolders.forEach(folder => {
+            const images = folders[folder];
+            totalImages += images.length;
+            
+            const section = document.createElement('div');
+            section.className = 'folder-section';
+            
+            // Add emoji for each folder type
+            let emoji = '📁';
+            if (folder.includes('event')) emoji = '🎯';
+            if (folder.includes('text')) emoji = '📝';
+            if (folder.includes('logo')) emoji = '📌';
+            if (folder.includes('bkg')) emoji = '🖼️';
+            if (folder.includes('step')) emoji = '👣';
+            if (folder.includes('dinner')) emoji = '🍽️';
+            if (folder.includes('animated')) emoji = '🎬';
+            if (folder.includes('cluster')) emoji = '🎨';
+            if (folder.includes('niki')) emoji = '🖼️';
+            if (folder.includes('venue')) emoji = '📄';
+            
+            const title = document.createElement('h2');
+            title.className = 'folder-title';
+            title.textContent = `${emoji} ${folder} (${images.length} images)`;
+            section.appendChild(title);
+            
+            const grid = document.createElement('div');
+            grid.className = 'grid';
+            
+            images.forEach(path => {
+                const url = baseURL + path;
+                const name = path.split('/').pop();
+                
+                const card = document.createElement('div');
+                card.className = 'asset';
+                card.onclick = () => copyLink(url);
+                card.innerHTML = `
+                    <img src="${url}" alt="${name}" loading="lazy">
+                    <div class="asset-name">${name}</div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            section.appendChild(grid);
+            container.appendChild(section);
+        });
+        
+        document.getElementById('stats').textContent = `📊 ${totalImages} images in ${sortedFolders.length} folders`;
+        
+        function copyLink(url) {
+            navigator.clipboard.writeText(url);
+            const copied = document.getElementById('copied');
+            copied.textContent = '✓ Copied: ' + url.split('/').pop();
+            copied.style.display = 'block';
+            setTimeout(() => copied.style.display = 'none', 3000);
+        }
+        
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            let visibleCount = 0;
+            
+            document.querySelectorAll('.asset').forEach(asset => {
+                const name = asset.querySelector('.asset-name').textContent.toLowerCase();
+                const isVisible = name.includes(search);
+                asset.style.display = isVisible ? 'block' : 'none';
+                if (isVisible) visibleCount++;
+            });
+            
+            // Update count
+            if (search) {
+                document.getElementById('stats').textContent = `📊 Showing ${visibleCount} of ${totalImages} images`;
+            } else {
+                document.getElementById('stats').textContent = `📊 ${totalImages} images in ${sortedFolders.length} folders`;
+            }
+            
+            // Hide empty sections
+            document.querySelectorAll('.folder-section').forEach(section => {
+                const visibleAssets = section.querySelectorAll('.asset:not([style*="none"])');
+                section.style.display = visibleAssets.length > 0 ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
