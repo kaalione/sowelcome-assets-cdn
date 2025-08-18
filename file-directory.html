@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SoWelcome Files Directory</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        h1 { color: #667eea; }
+        .file-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .file-card {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .file-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .file-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .file-name {
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 SoWelcome Files Directory</h1>
+        
+        <div class="file-section">
+            <h2>📄 PDF Documents</h2>
+            <div class="file-grid" id="pdfs"></div>
+        </div>
+        
+        <div class="file-section">
+            <h2>📊 Data Files</h2>
+            <div class="file-grid" id="data"></div>
+        </div>
+        
+        <div class="file-section">
+            <h2>📦 Other Files</h2>
+            <div class="file-grid" id="others"></div>
+        </div>
+    </div>
+    
+    <script>
+        const baseURL = 'https://cdn.jsdelivr.net/gh/kaalione/sowelcome-assets-cdn@main/';
+        
+        // Add your files here
+        const files = {
+            pdfs: [
+                'venue-menus-pdfs/LABOCA_MAIN_MENU_ENG_v4.pdf',
+                'venue-menus-pdfs/MRF_BRUNCH_2024.pdf'
+            ],
+            data: [
+                'cdn-links.csv'
+            ],
+            others: []
+        };
+        
+        function createFileCard(path) {
+            const name = path.split('/').pop();
+            const ext = name.split('.').pop().toLowerCase();
+            
+            let icon = '📄';
+            if (ext === 'pdf') icon = '📕';
+            if (ext === 'csv' || ext === 'xlsx') icon = '📊';
+            if (ext === 'zip') icon = '📦';
+            if (ext === 'mp4' || ext === 'webm') icon = '🎥';
+            
+            const url = baseURL + path;
+            
+            return `
+                <div class="file-card" onclick="window.open('${url}', '_blank')">
+                    <div class="file-icon">${icon}</div>
+                    <div class="file-name">${name}</div>
+                </div>
+            `;
+        }
+        
+        // Populate sections
+        document.getElementById('pdfs').innerHTML = files.pdfs.map(createFileCard).join('');
+        document.getElementById('data').innerHTML = files.data.map(createFileCard).join('');
+        document.getElementById('others').innerHTML = files.others.map(createFileCard).join('');
+    </script>
+</body>
+</html>
