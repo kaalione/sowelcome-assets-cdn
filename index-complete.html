@@ -25,11 +25,6 @@
             font-size: 1.2em;
             font-weight: bold;
         }
-        .last-updated {
-            color: rgba(255,255,255,0.8);
-            font-size: 0.9em;
-            margin-left: 20px;
-        }
         .search { 
             padding: 12px 20px; 
             width: 100%;
@@ -52,6 +47,23 @@
             font-size: 1.3em;
             border-bottom: 2px solid #667eea;
             padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .share-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        .share-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
         }
         .grid { 
             display: grid; 
@@ -95,10 +107,28 @@
             display: none;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             animation: slideIn 0.3s ease;
+            z-index: 1000;
         }
         @keyframes slideIn {
             from { transform: translateX(100px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
+        }
+        .filter-notice {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+        .clear-filter {
+            background: white;
+            color: #4CAF50;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -107,8 +137,11 @@
         <h1>🎨 SoWelcome Complete Assets Gallery</h1>
         <p class="subtitle">Click any image to copy its CDN link</p>
         <div class="stats" id="stats">Loading...</div>
-        <span class="last-updated">Last updated: 2025-08-19 00:39</span>
         <br>
+        <div class="filter-notice" id="filterNotice">
+            <span id="filterText"></span>
+            <button class="clear-filter" onclick="clearFilter()">Clear Filter</button>
+        </div>
         <input type="text" class="search" placeholder="Search images by name..." id="searchBox">
         <div id="folders"></div>
     </div>
@@ -118,6 +151,13 @@
     <script>
         const baseURL = 'https://cdn.jsdelivr.net/gh/kaalione/sowelcome-assets-cdn@main/';
         const allImages = [
+            'New icons SW/sowelcome-icon-face.png',
+            'New icons SW/sowelcome-icon-face2.png',
+            'New icons SW/sowelcome-icon-lemur.png',
+            'New icons SW/sowelcome-icon-lemurs.png',
+            'Selma/favicon_v2_selma.png',
+            'Selma/selmalogopng-transparent.png',
+            'Selma/webclip_v2_selma.png',
             'bkgs/bkg_people/sowelcome_hero_ppl_1.png',
             'bkgs/bkg_people/sowelcome_hero_ppl_10.png',
             'bkgs/bkg_people/sowelcome_hero_ppl_2.png',
@@ -166,6 +206,14 @@
             'event-icons/Animated-Icons-NoBkg/graduation-animated.gif',
             'event-icons/Animated-Icons-NoBkg/reunion-animated.gif',
             'event-icons/Animated-Icons-NoBkg/spontaneous-animated.gif',
+            'event-icons/EventTypes/sowelcome-afterwork.png',
+            'event-icons/EventTypes/sowelcome-breakfast.png',
+            'event-icons/EventTypes/sowelcome-brunch.png',
+            'event-icons/EventTypes/sowelcome-dinner.png',
+            'event-icons/EventTypes/sowelcome-dinner_party.png',
+            'event-icons/EventTypes/sowelcome-lunch.png',
+            'event-icons/EventTypes/sowelcome-other.png',
+            'event-icons/EventTypes/sowelcome-party.png',
             'event-icons/SW-ICONS-NO-BKG/1.png',
             'event-icons/SW-ICONS-NO-BKG/10.png',
             'event-icons/SW-ICONS-NO-BKG/11.png',
@@ -288,16 +336,30 @@
         // Sort folders alphabetically
         const sortedFolders = Object.keys(folders).sort();
         
+        // Check for folder filter in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const folderFilter = urlParams.get('folder');
+        
         // Create HTML for each folder
         const container = document.getElementById('folders');
         let totalImages = 0;
+        let displayedFolders = folderFilter ? [folderFilter] : sortedFolders;
         
-        sortedFolders.forEach(folder => {
+        // Show filter notice if filtered
+        if (folderFilter) {
+            document.getElementById('filterNotice').style.display = 'block';
+            document.getElementById('filterText').textContent = `📁 Showing only: ${folderFilter} folder`;
+        }
+        
+        displayedFolders.forEach(folder => {
+            if (!folders[folder]) return; // Skip if folder doesn't exist
+            
             const images = folders[folder];
             totalImages += images.length;
             
             const section = document.createElement('div');
             section.className = 'folder-section';
+            section.id = 'folder-' + folder.replace(/[^a-zA-Z0-9]/g, '-');
             
             // Add emoji for each folder type
             let emoji = '📁';
@@ -312,10 +374,13 @@
             if (folder.includes('niki')) emoji = '🖼️';
             if (folder.includes('venue')) emoji = '📄';
             
-            const title = document.createElement('h2');
-            title.className = 'folder-title';
-            title.textContent = `${emoji} ${folder} (${images.length} images)`;
-            section.appendChild(title);
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'folder-title';
+            titleDiv.innerHTML = `
+                <span>${emoji} ${folder} (${images.length} images)</span>
+                <button class="share-btn" onclick="shareFolder('${folder}')">🔗 Share Folder Link</button>
+            `;
+            section.appendChild(titleDiv);
             
             const grid = document.createElement('div');
             grid.className = 'grid';
@@ -338,7 +403,12 @@
             container.appendChild(section);
         });
         
-        document.getElementById('stats').textContent = `📊 ${totalImages} images in ${sortedFolders.length} folders`;
+        // Update stats
+        if (folderFilter) {
+            document.getElementById('stats').textContent = `📊 ${totalImages} images in ${folderFilter} folder`;
+        } else {
+            document.getElementById('stats').textContent = `📊 ${allImages.length} images in ${sortedFolders.length} folders`;
+        }
         
         function copyLink(url) {
             navigator.clipboard.writeText(url);
@@ -346,6 +416,19 @@
             copied.textContent = '✓ Copied: ' + url.split('/').pop();
             copied.style.display = 'block';
             setTimeout(() => copied.style.display = 'none', 3000);
+        }
+        
+        function shareFolder(folderName) {
+            const shareUrl = window.location.origin + window.location.pathname + '?folder=' + encodeURIComponent(folderName);
+            navigator.clipboard.writeText(shareUrl);
+            const copied = document.getElementById('copied');
+            copied.innerHTML = '🔗 Folder link copied!<br><small>' + shareUrl + '</small>';
+            copied.style.display = 'block';
+            setTimeout(() => copied.style.display = 'none', 4000);
+        }
+        
+        function clearFilter() {
+            window.location.href = window.location.pathname;
         }
         
         // Search functionality
@@ -362,9 +445,11 @@
             
             // Update count
             if (search) {
-                document.getElementById('stats').textContent = `📊 Showing ${visibleCount} of ${totalImages} images`;
+                document.getElementById('stats').textContent = `📊 Showing ${visibleCount} images matching "${search}"`;
+            } else if (folderFilter) {
+                document.getElementById('stats').textContent = `📊 ${totalImages} images in ${folderFilter} folder`;
             } else {
-                document.getElementById('stats').textContent = `📊 ${totalImages} images in ${sortedFolders.length} folders`;
+                document.getElementById('stats').textContent = `📊 ${allImages.length} images in ${sortedFolders.length} folders`;
             }
             
             // Hide empty sections
