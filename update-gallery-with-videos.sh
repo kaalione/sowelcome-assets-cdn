@@ -1,3 +1,24 @@
+#!/bin/bash
+
+echo "🚀 Updating Gallery with Images AND Videos..."
+echo "=============================================="
+
+cd /Users/linuskaasik/Downloads/SoWelcome_Assets
+
+# Get all image AND video files from git
+git ls-files | grep -E '\.(png|jpg|jpeg|gif|svg|PNG|JPG|JPEG|GIF|SVG|mp4|MP4|webm|WEBM|mov|MOV)$' > all-media.txt
+
+# Count them
+TOTAL=$(wc -l < all-media.txt)
+IMAGE_COUNT=$(git ls-files | grep -E '\.(png|jpg|jpeg|gif|svg|PNG|JPG|JPEG|GIF|SVG)$' | wc -l)
+VIDEO_COUNT=$(git ls-files | grep -E '\.(mp4|MP4|webm|WEBM|mov|MOV)$' | wc -l)
+
+echo "📊 Total media files: $TOTAL"
+echo "🖼️  Images: $IMAGE_COUNT"
+echo "🎬 Videos: $VIDEO_COUNT"
+
+# Create updated gallery with video support
+cat > index-complete.html << 'HTML'
 <!DOCTYPE html>
 <html>
 <head>
@@ -160,211 +181,14 @@
     <script>
         const baseURL = 'https://cdn.jsdelivr.net/gh/kaalione/sowelcome-assets-cdn@main/';
         const allMedia = [
-            'Color_Lemur_animations/131eb4ab-4c39-4c60-ae19-cc2011d36a5c_4_720_N.mp4',
-            'Color_Lemur_animations/d07391ea-662c-44cf-8864-ee42e4fe888d_2_720_N.mp4',
-            'Color_Lemur_animations/d07391ea-662c-44cf-8864-ee42e4fe888d_3_720_N.mp4',
-            'Color_Lemur_animations/e83c99ed-25c5-4949-b6a9-5e7816c61a78_2_720_N.mp4',
-            'Color_Lemur_animations/e83c99ed-25c5-4949-b6a9-5e7816c61a78_4_720_N.mp4',
-            'EventType_animations/089077ee-a299-4924-b261-68be5a6bd8eb_1_720_N (1).mp4',
-            'EventType_animations/089077ee-a299-4924-b261-68be5a6bd8eb_1_720_N.mp4',
-            'EventType_animations/2197a0be-5a29-41bb-8963-4c8724c8318c_1_720_N.mp4',
-            'EventType_animations/2d2b4f32-0213-4ee1-bdcc-fc9e3542751b_2_720_N.mp4',
-            'EventType_animations/49e53a69-e287-4144-aa6d-07df526275a6_1_720_N (1).mp4',
-            'EventType_animations/49e53a69-e287-4144-aa6d-07df526275a6_1_720_N.mp4',
-            'EventType_animations/4d9f0c54-fccc-432c-bd4e-f86bdecabb3b_2_720_N.mp4',
-            'EventType_animations/66d0c665-2b7d-44c6-b881-1bf37b5d927d_4_720_N.mp4',
-            'EventType_animations/755b5b22-cffb-461a-8651-a4e7fda83a98_3_720_N.mp4',
-            'EventType_animations/8517f187-4a58-44d9-849f-3ff18669b186_3_720_N.mp4',
-            'EventType_animations/d6da7595-51b0-4ce4-867e-d0f1e1a6a283_3_720_N.mp4',
-            'New icons SW/sowelcome-icon-face.png',
-            'New icons SW/sowelcome-icon-face2.png',
-            'New icons SW/sowelcome-icon-lemur.png',
-            'New icons SW/sowelcome-icon-lemurs.png',
-            'Selma/favicon_v2_selma.png',
-            'Selma/selmalogopng-transparent.png',
-            'Selma/webclip_v2_selma.png',
-            'animations/981562d3-7818-43c9-bd7a-6d4fde41edcc_4_720_N.mp4',
-            'animations/9851c424-f966-4114-b053-0003c2beb548_1_720_N.mp4',
-            'animations/9851c424-f966-4114-b053-0003c2beb548_4_720_N.mp4',
-            'animations/a00d98eb-9eec-4a59-af04-e8f61f5b4b93_4_720_N.mp4',
-            'animations/a115dbd8-4ce3-41cb-9f30-928ca4be9fdf_2_720_N.mp4',
-            'animations/f3feee59-7035-4e52-93a9-8eb8f7b04121_4_720_N.mp4',
-            'bkgs/bkg_people/sowelcome_hero_ppl_1.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_10.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_2.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_3.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_4.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_5.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_6.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_7.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_8.png',
-            'bkgs/bkg_people/sowelcome_hero_ppl_9.png',
-            'bkgs/bkgs_abs/sowelcome_hero_1.jpeg',
-            'bkgs/bkgs_abs/sowelcome_hero_10.png',
-            'bkgs/bkgs_abs/sowelcome_hero_11.png',
-            'bkgs/bkgs_abs/sowelcome_hero_2.png',
-            'bkgs/bkgs_abs/sowelcome_hero_3.png',
-            'bkgs/bkgs_abs/sowelcome_hero_4.png',
-            'bkgs/bkgs_abs/sowelcome_hero_5.png',
-            'bkgs/bkgs_abs/sowelcome_hero_6.png',
-            'bkgs/bkgs_abs/sowelcome_hero_7.png',
-            'bkgs/bkgs_abs/sowelcome_hero_8.png',
-            'bkgs/bkgs_abs/sowelcome_hero_9.png',
-            'cluster-eventbkg/abstract_background_pink.png',
-            'cluster-eventbkg/ai _inovation.png',
-            'cluster-eventbkg/ai2.png',
-            'cluster-eventbkg/blue_lamp_background.png',
-            'cluster-eventbkg/calming_background_geen.png',
-            'cluster-eventbkg/campfire-fri-tanke-sowelcome.png',
-            'cluster-eventbkg/campfire-session-sowelcome-fritanke.png',
-            'cluster-eventbkg/inspiring_after-work.png',
-            'cluster-eventbkg/intraprenour-breakfast-sowelcome.png',
-            'cluster-eventbkg/longeviryinvite.png',
-            'cluster-eventbkg/minimalistic_background.png',
-            'cluster-eventbkg/modern_conference.png',
-            'cluster-eventbkg/peaceful_breakfast_gathering.png',
-            'dinners/dinner.jpeg',
-            'dinners/party.jpeg',
-            'dinners/step-1-smiling.png',
-            'event-icons/Animated-Icons-NoBkg/abstract-celebration-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/balloon-party-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/banquette-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/birthday-cake-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/celebration-lotus-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/concert-party-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/fireworks-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/gift-surprise-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/graduation-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/reunion-animated.gif',
-            'event-icons/Animated-Icons-NoBkg/spontaneous-animated.gif',
-            'event-icons/EventTypes/sowelcome-afterwork.png',
-            'event-icons/EventTypes/sowelcome-breakfast.png',
-            'event-icons/EventTypes/sowelcome-brunch.png',
-            'event-icons/EventTypes/sowelcome-dinner.png',
-            'event-icons/EventTypes/sowelcome-dinner_party.png',
-            'event-icons/EventTypes/sowelcome-lunch.png',
-            'event-icons/EventTypes/sowelcome-other.png',
-            'event-icons/EventTypes/sowelcome-party.png',
-            'event-icons/SW-ICONS-NO-BKG/1.png',
-            'event-icons/SW-ICONS-NO-BKG/10.png',
-            'event-icons/SW-ICONS-NO-BKG/11.png',
-            'event-icons/SW-ICONS-NO-BKG/12.png',
-            'event-icons/SW-ICONS-NO-BKG/13.png',
-            'event-icons/SW-ICONS-NO-BKG/14.png',
-            'event-icons/SW-ICONS-NO-BKG/15.png',
-            'event-icons/SW-ICONS-NO-BKG/2.png',
-            'event-icons/SW-ICONS-NO-BKG/3.png',
-            'event-icons/SW-ICONS-NO-BKG/4.png',
-            'event-icons/SW-ICONS-NO-BKG/5.png',
-            'event-icons/SW-ICONS-NO-BKG/6.png',
-            'event-icons/SW-ICONS-NO-BKG/7.png',
-            'event-icons/SW-ICONS-NO-BKG/8.png',
-            'event-icons/SW-ICONS-NO-BKG/9.png',
-            'event-icons/icon-animations/16a1077d-c962-4d4a-b691-e1b6a9b330c4_2_720_N.mp4',
-            'event-icons/icon-animations/1d377689-5cef-4903-9909-3ee6befdce56_4_720_N.mp4',
-            'event-icons/icon-animations/369decee-8983-49f9-b566-0650705d810c_2_720_N.mp4',
-            'event-icons/icon-animations/3ea74f83-4f72-4de3-b6fc-4d4f89b74d01_4_720_N.mp4',
-            'event-icons/icon-animations/68cf8a96-338a-4ad3-ba41-b07f7462960c_2_720_N.mp4',
-            'event-icons/icon-animations/6e8a0654-0094-4fd1-aa99-a521cad10db9_3_720_N.mp4',
-            'event-icons/icon-animations/7209c441-7891-47b8-893f-66ff20ab7f36_4_720_N.mp4',
-            'event-icons/icon-animations/a21e5957-1d0a-4058-9e84-84cdf7c1c25d_3_720_N.mp4',
-            'event-icons/icon-animations/bafa5bf8-7837-414b-8900-58be825cb2a6_4_720_N.mp4',
-            'event-icons/icon-animations/c5c97d5a-201c-4909-a903-a78a50cc23ae_4_720_N.mp4',
-            'event-icons/icon-animations/cec6a3d7-1e17-4c4e-8f48-75c76847cb44_1_720_N.mp4',
-            'event-icons/icon-animations/d72f3447-6c82-446b-9ba9-b71e0cb5ab3c_2_720_N.mp4',
-            'event-icons/icon_web/0_1 (1).png',
-            'event-icons/icon_web/0_1 (3).png',
-            'event-icons/icon_web/0_1 (5).png',
-            'event-icons/icon_web/0_1 (6).png',
-            'event-icons/icon_web/0_3 (5).png',
-            'event-icons/icon_web/Birthday.png',
-            'event-icons/icon_web/banquette.png',
-            'event-icons/icon_web/business.png',
-            'event-icons/icon_web/business_event.png',
-            'event-icons/icon_web/celebrations.png',
-            'event-icons/icon_web/concert.png',
-            'event-icons/icon_web/concerts.png',
-            'event-icons/icon_web/graduation.png',
-            'event-icons/icon_web/large group dinner.png',
-            'event-icons/icon_web/largegroupdinner.png',
-            'event-icons/icon_web/reunion.png',
-            'event-icons/icon_web/spontanous.png',
-            'event-icons/new-coons/Birthday-Cake-Icon.png',
-            'event-icons/new-coons/Business-Event-Icon.png',
-            'event-icons/new-coons/Celebration-Fireworks-Icon.png',
-            'event-icons/new-coons/Concert-Performance-Icon.png',
-            'event-icons/new-coons/DInner-Party-Icon-.png',
-            'event-icons/new-coons/Dinner-Party-Icon.png',
-            'event-icons/new-coons/Gift-Surprise-Icon.png',
-            'event-icons/new-coons/Graduation-Icon.png',
-            'event-icons/new-coons/Networking-Community-Icon.png',
-            'event-icons/new-coons/Professional-&-Career.png',
-            'event-icons/new-coons/Reunion-Team-Icon.png',
-            'event-icons/new-coons/Seasonal-&-Holiday.png',
-            'event-icons/new-coons/Wellness-&-Personal-Growth.png',
-            'event-icons/new-coons/oncert-Performance-Icon.png',
-            'event-icons/new-coons/social-lifestyle.png',
-            'event-icons/others/birthday.png',
-            'event-icons/others/birthday_cake.png',
-            'event-icons/others/concerts copy.png',
-            'event-icons/others/concerts.png',
-            'event-icons/others/deadline-icon-trans.png',
-            'event-icons/others/friends_icon.jpg',
-            'event-icons/others/friends_icon_sowelcome.png',
-            'event-icons/others/g56.png',
-            'event-icons/others/graduation.png',
-            'event-icons/others/info-icon.png',
-            'event-icons/others/large_group.png',
-            'event-icons/others/logo-icon.png',
-            'event-icons/others/people-icon-png-group-png-favpng-uVtkfNdweV9MQJ48XVWY2334X.jpg',
-            'event-icons/others/price-icon.png',
-            'event-icons/others/simeconference_Create_a_birthday_party_icon_for_online_use_feat_9281085e-9f1f-44fc-b5d0-ddc671b13b46.png',
-            'event-icons/others/sowelomce_business_event.png',
-            'logos-original/web_logos/sowelcome-120x120.png',
-            'logos-original/web_logos/sowelcome-header.jpg',
-            'logos-original/web_logos/sowelcome-lemur-icon.png',
-            'logos-original/web_logos/sowelcome-lemur-icon.svg',
-            'logos-original/web_logos/sowelcome-lemur-no-bkg (kopia).png',
-            'logos-original/web_logos/sowelcome-lemur-no-bkg.svg',
-            'logos-original/web_logos/sowelcome-logo-org.png',
-            'logos-original/web_logos/sowelcome-logo-org.svg',
-            'logos-original/web_logos/sowelcome_lemur_vector_g302.svg',
-            'niki-sw-img/Gen-2 3975629417, make the bottles flo, pooljpeg, M 5.mp4',
-            'niki-sw-img/dinner_party.jpeg',
-            'niki-sw-img/pool.jpeg',
-            'niki-sw-img/sowelcome-header-1920x1200.jpg',
-            'orange_lemur_animations/sowelcome-lemur-icon.png',
-            'orange_lemur_animations/sowelcome-lemur-no-bkg.SVG',
-            'orange_lemur_animations/sowelcome-lemur-no-bkg.png',
-            'steps/sowelcome_step_1.png',
-            'steps/sowelcome_step_10.png',
-            'steps/sowelcome_step_11.png',
-            'steps/sowelcome_step_12.png',
-            'steps/sowelcome_step_13.png',
-            'steps/sowelcome_step_2.png',
-            'steps/sowelcome_step_3.png',
-            'steps/sowelcome_step_4.png',
-            'steps/sowelcome_step_5.png',
-            'steps/sowelcome_step_6.png',
-            'steps/sowelcome_step_7.png',
-            'steps/sowelcome_step_8.png',
-            'steps/sowelcome_step_9.png',
-            'text-icons/Banquettes-text.png',
-            'text-icons/Banquettes2-text.png',
-            'text-icons/Birthday-text.png',
-            'text-icons/Birthday2-text.png',
-            'text-icons/BusinessEvent-text.png',
-            'text-icons/BusinessEvent2-text.png',
-            'text-icons/Celebrations-text.png',
-            'text-icons/Concerts-text.png',
-            'text-icons/DinnersLarge-text.png',
-            'text-icons/DinnersLarge2-text.png',
-            'text-icons/Graduation-text.png',
-            'text-icons/Spontaneous-text.png',
-            'text-icons/Spontaneous2-text.png',
-            'text-icons/Topical-text.png',
-            'text-icons/reunion-text.png',
-            'venue-menus-pdfs/brunch.jpeg',
+HTML
+
+# Add each media file as a JavaScript array element
+while IFS= read -r file; do
+    echo "            '$file'," >> index-complete.html
+done < all-media.txt
+
+cat >> index-complete.html << 'HTML'
         ];
         
         // Group media by folder
@@ -537,3 +361,28 @@
     </script>
 </body>
 </html>
+HTML
+
+# Clean up
+rm all-media.txt
+
+# Commit and push
+git add index-complete.html update-gallery-with-videos.sh
+git commit -m "Update gallery to show both images and videos - $TOTAL media files"
+git push
+
+echo ""
+echo "✅ SUCCESS! Gallery now shows BOTH images and videos!"
+echo "================================"
+echo "📊 Total media: $TOTAL files"
+echo "🖼️  Images: $IMAGE_COUNT"
+echo "🎬 Videos: $VIDEO_COUNT"
+echo ""
+echo "🌐 Gallery URL: https://kaalione.github.io/sowelcome-assets-cdn/index-complete.html"
+echo "⏰ Will be live in 2-3 minutes"
+echo ""
+echo "🎬 Videos will show with:"
+echo "  - Preview thumbnail (1 second in)"
+echo "  - 'VIDEO' indicator"
+echo "  - Light blue background"
+echo "  - Click to copy CDN link just like images!"
